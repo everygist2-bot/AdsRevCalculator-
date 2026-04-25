@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdRev Calculator - Ad Revenue Calculator & Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+        /* Sticky Header Styles */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .logo-text h1 {
+            color: white;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .logo-text p {
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Menu Toggle for Mobile */
+        .menu-toggle {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Calculator Card */
+        .calculator-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+
+        .card-header h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .form-section {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .results {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .result-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Blog Section */
+        .blog-section {
+            margin-top: 40px;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .blog-header h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .blog-header p {
+            color: #666;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .blog-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 15px;
+        }
+
+        .blog-category {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .blog-content {
+            padding: 20px;
+        }
+
+        .blog-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+
+        .read-more {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Modal for Blog Reading */
+        .blog-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .blog-modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-blog-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-blog-meta {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-blog-content {
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .modal-blog-content p {
+            margin-bottom: 15px;
+        }
+
+        .modal-blog-content h3 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+        }
+
+        .modal-blog-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 15px;
+            color: #cbd5e0;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #a0aec0;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #4a5568;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .nav-menu.show {
+                display: flex;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .row {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Header -->
+    <header class="sticky-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">💰</div>
+                <div class="logo-text">
+                    <h1>AdRev Calculator</h1>
+                    <p>Maximize your ad earnings</p>
+                </div>
+            </div>
+            
+            <button class="menu-toggle" onclick="toggleMobileMenu()">☰ Menu</button>
+            
+            <div class="nav-menu" id="navMenu">
+                <button class="nav-btn active" onclick="showSection('calculator')">📊 Calculator</button>
+                <button class="nav-btn" onclick="showSection('blog')">📝 Blog</button>
+                <button class="nav-btn" onclick="showSection('about')">ℹ️ About</button>
+                <button class="nav-btn" onclick="showSection('contact')">📞 Contact</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Calculator Section -->
+        <div id="calculatorSection" class="section">
+            <div class="calculator-card">
+                <div class="card-header">
+                    <h2>📊 Ad Revenue Calculator</h2>
+                    <p>Estimate your earnings from display advertising</p>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label>📊 Total Monthly Impressions</label>
+                        <input type="number" id="impressions" placeholder="e.g., 100000" value="100000">
+                    </div>
+
+                    <div class="row">
+                        <div class="input-group">
+                            <label>🌍 Country</label>
+                            <select id="country">
+                                <option value="US">🇺🇸 United States</option>
+                                <option value="UK">🇬🇧 United Kingdom</option>
+                                <option value="CA">🇨🇦 Canada</option>
+                                <option value="AU">🇦🇺 Australia</option>
+                                <option value="DE">🇩🇪 Germany</option>
+                                <option value="FR">🇫🇷 France</option>
+                                <option value="IN">🇮🇳 India</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>🎯 Niche</label>
+                            <select id="niche">
+                                <option value="finance">💰 Finance</option>
+                                <option value="tech">💻 Technology</option>
+                                <option value="gaming">🎮 Gaming</option>
+                                <option value="lifestyle">✨ Lifestyle</option>
+                                <option value="health">💊 Health</option>
+                                <option value="food">🍳 Food</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>📢 Ad Partner</label>
+                        <select id="partner">
+                            <option value="mediavine">Mediavine</option>
+                            <option value="raptive">Raptive</option>
+                            <option value="adsense">Google AdSense</option>
+                            <option value="ezoic">Ezoic</option>
+                        </select>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateRevenue()">
+                        🚀 Calculate Revenue
+                    </button>
+                </div>
+
+                <div class="results" id="results">
+                    <h3 style="margin-bottom: 15px;">📈 Estimated Earnings</h3>
+                    <div id="resultContent">
+                        <div class="result-card">
+                            <span>💰 Estimated RPM</span>
+                            <span class="result-value">$0.00</span>
+                        </div>
+                        <div class="result-card">
+                            <span>📆 Monthly Revenue</span>
+                            <span class="result-value">$0.00</span>
+                        </div>
+                        <div class="result-card">
+                            <span>🎯 Yearly Revenue</span>
+                            <span class="result-value">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Section -->
+        <div id="blogSection" class="section" style="display: none;">
+            <div class="blog-section">
+                <div class="blog-header">
+                    <h2>📝 Latest Articles</h2>
+                    <p>Expert insights on ad revenue optimization</p>
+                </div>
+                <div class="blog-grid" id="blogGrid">
+                    <!-- Blog posts will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="aboutSection" class="section" style="display: none;">
+            <div class="calculator-card">
+                <div class="card-header">
+                    <h2>ℹ️ About AdRev Calculator</h2>
+                </div>
+                <div class="form-section">
+                    <p style="margin-bottom: 15px; line-height: 1.6;">AdRev Calculator helps publishers, bloggers, and content creators estimate their potential advertising revenue accurately.</p>
+                    <p style="margin-bottom: 15px; line-height: 1.6;">We use real-world data from thousands of publishers to provide realistic RPM (Revenue Per Thousand impressions) estimates based on:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.8;">
+                        <li>Geographic location of your audience</li>
+                        <li>Content niche and industry</li>
+                        <li>Ad network partner selection</li>
+                        <li>Fill rates and viewability factors</li>
+                    </ul>
+                    <p style="line-height: 1.6;">Founded in 2024, we've helped over 10,000 publishers optimize their ad monetization strategy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div id="contactSection" class="section" style="display: none;">
+            <div class="calculator-card">
+                <div class="card-header">
+                    <h2>📞 Contact Us</h2>
+                </div>
+                <div class="form-section">
+                    <p style="margin-bottom: 20px;"><strong>📧 Email:</strong> support@adrevcalculator.com</p>
+                    <p style="margin-bottom: 20px;"><strong>💼 Business Inquiries:</strong> partnerships@adrevcalculator.com</p>
+                    <p style="margin-bottom: 20px;"><strong>⏰ Response Time:</strong> Within 24-48 hours</p>
+                    <p style="margin-bottom: 20px;"><strong>🌐 Follow Us:</strong></p>
+                    <p>🐦 Twitter: @AdRevCalc</p>
+                    <p>📘 Facebook: /adrevcalculator</p>
+                    <p>💼 LinkedIn: AdRev Calculator</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Reading Modal -->
+    <div id="blogModal" class="blog-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBlogModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>💰 AdRev Calculator</h4>
+                <p>Your trusted partner for ad revenue estimation and monetization strategies.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <p><a href="#" onclick="showSection('calculator'); return false;">Calculator</a></p>
+                <p><a href="#" onclick="showSection('blog'); return false;">Blog</a></p>
+                <p><a href="#" onclick="showSection('about'); return false;">About</a></p>
+                <p><a href="#" onclick="showSection('contact'); return false;">Contact</a></p>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <p><a href="#">Privacy Policy</a></p>
+                <p><a href="#">Terms of Use</a></p>
+                <p><a href="#">Cookie Policy</a></p>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2024 AdRev Calculator. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // RPM Database
+        const rpmDatabase = {
+            baseRPM: { US: 18.00, UK: 14.00, CA: 12.00, AU: 11.00, DE: 10.00, FR: 8.00, IN: 1.50 },
+            nicheMultipliers: { finance: 2.5, tech: 1.5, gaming: 1.3, health: 1.2, lifestyle: 0.8, food: 0.9 },
+            partnerAdjustments: { mediavine: 1.2, raptive: 1.25, adsense: 1.0, ezoic: 0.9 }
+        };
+
+        // Blog Articles Database
+        const blogArticles = [
+            {
+                id: 1,
+                title: "10 Proven Ways to Double Your Ad Revenue in 2024",
+                excerpt: "Discover anable strategies that successful publishers use to maximize their advertising earnings...",
+                category: "Tips & Tricks",
+                readTime: "8 min read",
+                date: "April 15, 2024",
+                image: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                content: `
+                    <h3>1. Optimize Ad Placement</h3>
+                    <p>The position of your ads dramatically affects click-through rates and revenue. Above-the-fold placements typically earn 3-5x more than below-the-fold.</p>
+                    
+                    <h3>2. Improve Page Load Speed</h3>
+                    <p>Faster loading pages lead to better user experience and higher viewability scores. Aim for under 2 seconds load time.</p>
+                    
+                    <h3>3. Use Multiple Ad Networks</h3>
+                    <p>Don't rely on a single ad partner. Use header bidding to let multiple networks compete for your inventory.</p>
+                    
+                    <h3>4. Focus on High-CPM Niches</h3>
+                    <p>Finance, insurance, and technology niches command the highest CPMs. Consider creating content in these areas.</p>
+                    
+                    <h3>5. Increase Mobile Optimization</h3>
+                    <p>Over 60% of traffic comes from mobile. Ensure your ads are responsive and don't harm user experience.</p>
+                    
+                    <h3>6. Implement Lazy Loading</h3>
+                    <p>Load ads only when users scroll to them to improve page speed and viewability metrics.</p>
+                    
+                    <h3>7. Target Tier-1 Countries</h3>
+                    <p>US, UK, Canada, and Australia pay 5-10x more than other regions. Create content specifically for these audiences.</p>
+                    
+                    <h3>8. Use Video Ads</h3>
+                    <p>Video ads have significantly higher CPMs than display ads (up to $15-25 RPM vs $2-5 for display).</p>
+                    
+                    <h3>9. A/B Test Everything</h3>
+                    <p>Test ad sizes, colors, placements, and networks continuously to find what works best for your audience.</p>
+                    
+                    <h3>10. Build Quality Traffic</h3>
+                    <p>Focus on organic search and returning visitors. Quality traffic converts better and gets higher ad rates.</p>
+                `
+            },
+            {
+                id: 2,
+                title: "Mediavine vs AdThrive vs Ezoic: Which Pays More?",
+                excerpt: "An in-depth comparison of the top ad management platforms and their revenue potential...",
+                category: "Ad Networks",
+                readTime: "12 min read",
+                date: "April 10, 2024",
+                image: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                content: `
+                    <h3>Mediavine Overview</h3>
+                    <p>Mediavine requires 50,000 sessions/month. They offer excellent RPMs, typically $25-40 for US traffic. Their dashboard is user-friendly with real-time analytics.</p>
+                    
+                    <h3>Raptive (formerly AdThrive)</h3>
+                    <p>Requires 100,000 pageviews/month. Known for highest RPMs ($30-50 for US traffic) but stricter requirements. Excellent support team.</p>
+                    
+                    <h3>Ezoic</h3>
+                    <p>No minimum traffic requirements (starting at 10,000 sessions). Uses AI to optimize placements. RPMs range $15-25 for US traffic.</p>
+                    
+                    <h3>Google AdSense</h3>
+                    <p>Best for beginners with no traffic minimums. Lower RPMs ($5-15 for US) but reliable payments and easy setup.</p>
+                    
+                    <h3>Which One Should You Choose?</h3>
+                    <p><strong>Under 10k sessions:</strong> Start with AdSense or Ezoic<br>
+                    <strong>10k-50k sessions:</strong> Ezoic is your best bet<br>
+                    <strong>50k-100k sessions:</strong> Mediavine offers great value<br>
+                    <strong>100k+ sessions:</strong> Raptive typically pays the most</p>
+                    
+                    <h3>Pro Tip</h3>
+                    <p>Don't switch networks too frequently. Give each platform at least 3 months to optimize your earnings.</p>
+                `
+            },
+            {
+                id: 3,
+                title: "Understanding RPM: The Metric That Matters",
+                excerpt: "Learn what RPM really means and how to calculate it correctly for your website...",
+                category: "Education",
+                readTime: "6 min read",
+                date: "April 5, 2024",
+                image: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                content: `
+                    <h3>What is RPM?</h3>
+                    <p>RPM stands for Revenue Per Thousand impressions. It's calculated as (Total Revenue / Total Impressions) × 1000.</p>
+                    
+                    <h3>Why RPM Matters</h3>
+                    <p>RPM helps you understand how much you earn from every 1,000 visitors, regardless of how many ads they see.</p>
+                    
+                    <h3>Page RPM vs Session RPM</h3>
+                    <p><strong>Page RPM:</strong> Revenue per 1,000 pageviews<br>
+                    <strong>Session RPM:</strong> Revenue per 1,000 user sessions<br>
+                    <strong>Ad RPM:</strong> Revenue per 1,000 ad impressions</p>
+                    
+                    <h3>Industry Average RPMs (US Traffic)</h3>
+                    <ul>
+                        <li>Finance: $30-60</li>
+                        <li>Real Estate: $25-45</li>
+                        <li>Technology: $15-25</li>
+                        <li>Health: $12-20</li>
+                        <li>Lifestyle: $5-10</li>
+                        <li>Entertainment: $3-8</li>
+                    </ul>
+                    
+                    <h3>How to Improve Your RPM</h3>
+                    <p>Focus on creating high-quality content, improving site speed, optimizing ad placement, and targeting high-value keywords.</p>
+                `
+            },
+            {
+                id: 4,
+                title: "Top 5 Highest Paying Ad Niches in 2024",
+                excerpt: "Discover which content categories generate the highest CPMs and how to enter them...",
+                category: "Niche Analysis",
+                readTime: "10 min read",
+                date: "March 28, 2024",
+                image: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+                content: `
+                    <h3>1. Finance & Cryptocurrency ($35-60 RPM)</h3>
+                    <p>Finance remains the king of CPMs. Topics like credit cards, loans, insurance, and crypto pay premium rates due to high advertiser competition.</p>
+                    
+                    <h3>2. Real Estate ($25-45 RPM)</h3>
+                    <p>Property listings, mortgages, and real estate investment content attract high-value advertisers willing to pay top dollar.</p>
+                    
+                    <h3>3. Software & SaaS ($20-35 RPM)</h3>
+                    <p>Reviews of business software, productivity tools, and B2B solutions have excellent monetization potential.</p>
+                    
+                    <h3>4. Legal Services ($25-40 RPM)</h3>
+                    <p>Legal advice, attorney directories, and law-related content command premium rates due to high client acquisition costs.</p>
+                    
+                    <h3>5. Health & Wellness ($15-25 RPM)</h3>
+                    <p>Supplements, fitness programs, and health advice niches have consistent demand and good CPMs.</p>
+                    
+                    <h3>How to Enter These Niches</h3>
+                    <p>Start by creating detailed guides, comparison articles, and expert roundups. Build authority through quality content and backlinks.</p>
+                `
+            },
+            {
+                id: 5,
+                title: "How to Get Approved by Mediavine in 2024",
+                excerpt: "Step-by-step guide to meeting Mediavine's requirements and getting accepted...",
+                category: "Guides",
+                readTime: "9 min read",
+                date: "March 20, 2024",
+                image: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+                content: `
+                    <h3>Mediavine Requirements</h3>
+                    <ul>
+                        <li>50,000 sessions per month minimum</li>
+                        <li>Majority US/UK/CA/AU traffic</li>
+                        <li>Quality original content</li>
+                        <li>Good site speed</li>
+                        <li>Clean design (no intrusive ads)</li>
+                    </ul>
+                    
+                    <h3>Step 1: Build Your Traffic</h3>
+                    <p>Focus on SEO and organic growth. Avoid buying traffic as Mediavine checks for quality sources.</p>
+                    
+                    <h3>Step 2: Optimize Your Site Speed</h3>
+                    <p>Use caching, compress images, and minimize plugins. Aim for under 2 seconds load time.</p>
+                    
+                    <h3>Step 3: Create Evergreen Content</h3>
+                    <p>Publish in-depth articles (2000+ words) that remain relevant for years. Avoid news or trending topics.</p>
+                    
+                    <h3>Step 4: Apply Through Their Website</h3>
+                    <p>Once you hit 50k sessions for 2+ consecutive months, submit your application. Response time is 1-2 weeks.</p>
+                    
+                    <h3>Common Rejection Reasons</h3>
+                    <p>Low traffic quality, poor design, thin content, slow loading speed, or policy violations.</p>
+                `
+            }
+        ];
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('show');
+        }
+
+        // Section Navigation
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('calculatorSection').style.display = 'none';
+            document.getElementById('blogSection').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'none';
+            document.getElementById('contactSection').style.display = 'none';
+            
+            // Show selected section
+            if (section === 'calculator') document.getElementById('calculatorSection').style.display = 'block';
+            if (section === 'blog') {
+                document.getElementById('blogSection').style.display = 'block';
+                renderBlogPosts();
+            }
+            if (section === 'about') document.getElementById('aboutSection').style.display = 'block';
+            if (section === 'contact') document.getElementById('contactSection').style.display = 'block';
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('navMenu').classList.remove('show');
+        }
+
+        // Render Blog Posts
+        function renderBlogPosts() {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.innerHTML = blogArticles.map(article => `
+                <div class="blog-card" onclick="openBlogModal(${article.id})">
+                    <div class="blog-image" style="background: ${article.image}">
+                        <span class="blog-category">${article.category}</span>
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">${article.title}</h3>
+                        <p class="blog-excerpt">${article.excerpt}</p>
+                        <div class="blog-meta">
+                            <span>📅 ${article.date}</span>
+                            <span>⏱️ ${article.readTime}</span>
+                            <span class="read-more">Read More →</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open Blog Modal
+        function openBlogModal(id) {
+            const article = blogArticles.find(a => a.id === id);
+            const modal = document.getElementById('blogModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <h2 class="modal-blog-title">${article.title}</h2>
+                <div class="modal-blog-meta">
+                    ${article.category} • ${article.date} • ${article.readTime}
+                </div>
+                <div class="modal-blog-content">
+                    ${article.content}
+                </div>
+            `;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close Blog Modal
+        function closeBlogModal() {
+            document.getElementById('blogModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Calculate Revenue
+        function calculateRevenue() {
+            const impressions = parseFloat(document.getElementById('impressions').value);
+            const country = document.getElementById('country').value;
+            const niche = document.getElementById('niche').value;
+            const partner = document.getElementById('partner').value;
+            
+            const baseRPM = rpmDatabase.baseRPM[country];
+            const nicheMultiplier = rpmDatabase.nicheMultipliers[niche];
+            const partnerAdjustment = rpmDatabase.partnerAdjustments[partner];
+            
+            const effectiveRPM = baseRPM * nicheMultiplier * partnerAdjustment;
+            const monthlyRevenue = (impressions / 1000) * effectiveRPM;
+            const yearlyRevenue = monthlyRevenue * 12;
+            
+            document.getElementById('resultContent').innerHTML = `
+                <div class="result-card">
+                    <span>💰 Estimated RPM</span>
+                    <span class="result-value">$${effectiveRPM.toFixed(2)}</span>
+                </div>
+                <div class="result-card">
+                    <span>📆 Monthly Revenue</span>
+                    <span class="result-value">$${monthlyRevenue.toFixed(2)}</span>
+                </div>
+                <div class="result-card">
+                    <span>🎯 Yearly Revenue</span>
+                    <span class="result-value">$${yearlyRevenue.toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('blogModal');
+            if (event.target === modal) {
+                closeBlogModal();
+            }
+        }
+
+        // Initialize
+        window.onload = () => {
+            calculateRevenue();
+            renderBlogPosts();
+        };
+    </script>
+</body>
+</html>
+```
